@@ -1,0 +1,39 @@
+﻿<Window x:Class="b7.XabboExamples.WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:b7.XabboExamples.WpfApp"
+        mc:Ignorable="d"
+        Title="Xabbo.GEarth WPF example extension" Height="450" Width="800"
+        FontSize="14"
+        d:DataContext="{d:DesignInstance Type={x:Type local:ExampleExtension}}">
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBox
+            Margin="2"
+            IsReadOnly="True" 
+            VerticalScrollBarVisibility="Visible"
+            FontFamily="Consolas"
+            Text="{Binding LogText}"
+            TextWrapping="Wrap" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"
+                    IsEnabled="{Binding IsGameConnected}">
+            <CheckBox Margin="2"
+                      VerticalAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      Content="Test packet blocking"
+                      IsChecked="{Binding TestPacketBlocking}" />
+            <CheckBox Margin="2"
+                      VerticalAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      Content="Test packet manipulation"
+                      IsChecked="{Binding TestPacketManipulation}" />
+            <Button Margin="2" Padding="8,2" Content="Test packet injection"
+                    Command="{Binding TestPacketInjectionCommand}" />
+        </StackPanel>
+    </Grid>
+</Window>
