@@ -8,24 +8,38 @@ namespace b7.XabboExamples.WpfApp
 {
     public partial class MainWindow : Window
     {
+        private readonly ExampleExtension _extension;
+
         public MainWindow()
         {
-            GEarthOptions options = new GEarthOptions
-            {
-                Title = "xabbo example extension",
-                Description = "an example extension using the xabbo framework",
-                Author = "b7",
-                Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?",
-                CanDelete = false,
-                CanLeave = false,
-                EnableOnClick = true
-            };
+            _extension = new ExampleExtension(App.Port);
 
             // Set the data context of the window to the extension handler
-            // so we can bind to properties on it from XAML
-            DataContext = new ExampleExtension(options, 9092);
+            // so we can bind to its properties from the UI (XAML)
+            DataContext = _extension;
 
             InitializeComponent();
+        }
+
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= MainWindow_Loaded;
+
+            try
+            {
+                _extension.Log("Connecting to remote interceptor...");
+                await _extension.RunAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"An unhandled error occurred: {ex}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                Application.Current.Shutdown();
+            }
         }
     }
 }

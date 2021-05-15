@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Windows.Input;
 
 using GalaSoft.MvvmLight.Command;
@@ -12,22 +14,27 @@ namespace b7.XabboExamples.WpfApp
 {
     public class ExampleExtension : GEarthExtension
     {
-        /* Properties must be implemented with this pattern
-         * in order to utilise the INotifyPropertyChanged interface,
-         * which notifies the UI of changes to be reflected */
-
-        private bool _manipulatePackets = false;
-        public bool TestPacketManipulation
+        private static readonly GEarthOptions _options = new GEarthOptions
         {
-            get => _manipulatePackets;
-            set => Set(ref _manipulatePackets, value);
+            Title = "Xabbo.GEarth WPF",
+            Description = "an example extension using the Xabbo framework",
+            Author = "b7",
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?",
+            ShowEventButton = true
+        };
+
+        private bool _enablePacketManipulation = false;
+        public bool EnablePacketManipulation
+        {
+            get => _enablePacketManipulation;
+            set => Set(ref _enablePacketManipulation, value);
         }
 
-        private bool _testPacketBlocking = false;
-        public bool TestPacketBlocking
+        private bool _enablePacketBlocking = false;
+        public bool EnablePacketBlocking
         {
-            get => _testPacketBlocking;
-            set => Set(ref _testPacketBlocking, value);
+            get => _enablePacketBlocking;
+            set => Set(ref _enablePacketBlocking, value);
         }
 
         private StringBuilder _log = new();
@@ -37,15 +44,17 @@ namespace b7.XabboExamples.WpfApp
             set => Set(ref _log, new StringBuilder(value));
         }
 
-        public ICommand TestPacketInjectionCommand { get; }
+        public ICommand InjectPacketClientCommand { get; }
+        public ICommand InjectPacketServerCommand { get; }
 
-        public ExampleExtension(GEarthOptions options, int port)
-            : base(options, port)
+        public ExampleExtension(int port)
+            : base(_options, port)
         {
-            TestPacketInjectionCommand = new RelayCommand(TestPacketInjectionExecuted);
+            InjectPacketClientCommand = new RelayCommand(InjectPacketClientExecuted);
+            InjectPacketServerCommand = new RelayCommand(InjectPacketServerExecuted);
         }
 
-        private void Log(string message)
+        public void Log(string message)
         {
             _log.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] {message}");
             RaisePropertyChanged(nameof(LogText));
@@ -73,11 +82,12 @@ namespace b7.XabboExamples.WpfApp
         {
             base.OnGameConnected(sender, e);
             Log($"Game connection established.\r\n\r\n"
-                + $"         Host: {e.Host}\r\n"
-                + $"         Port: {e.Port}\r\n"
-                + $"       Client: {e.ClientType}\r\n"
-                + $"      Version: {e.Version}\r\n"
-                + $"     Messages: {e.MessagesPath}\r\n"
+                + $"               Host: {e.Host}\r\n"
+                + $"               Port: {e.Port}\r\n"
+                + $"  Client identifier: {e.Port}\r\n"
+                + $"        Client type: {e.ClientType}\r\n"
+                + $"     Client version: {e.ClientVersion}\r\n"
+                + $"      Message infos: {e.Messages.Count:N0}\r\n"
             );
         }
 
@@ -99,36 +109,41 @@ namespace b7.XabboExamples.WpfApp
             Log($"Connection with G-Earth lost.");
         }
 
-        private void TestPacketInjectionExecuted()
+        private void InjectPacketClientExecuted()
         {
-            SendToClientAsync(In.Chat, 0, "Hello from the Xabbo.GEarth extension example!", 0, 0, 0, 0);
-            Log($"Sent chat packet to client.");
+            /*
+                Sends a Chat packet to the client.
+                Use Send to send packets to the server or client.
+                The destination is determined by the header.
+            */
+            Send(In.Chat, -1, "Hello from the Xabbo.GEarth example!", 0, 2, 0, 0);
+            Log("Sent chat packet to client.");
+        }
+
+        private void InjectPacketServerExecuted()
+        {
+            // Sends a Chat packet to the server.
+            Send(Out.Chat, "Hello, world", 0, -1);
+            Log("Sent chat packet to server.");
         }
 
         [InterceptIn(nameof(Incoming.Chat), nameof(Incoming.Shout))]
         private void OnInterceptChat(InterceptArgs e)
         {
-            // Changes incoming shout messages to upper-case,
-            // and incoming chat messages to lower-case.
-            if (TestPacketManipulation)
+            // Changes incoming messages to upper-case
+            if (EnablePacketManipulation)
             {
-                // Read a string after the first int (4 bytes) in the packet
-                string message = e.Packet.ReadString(4);
-
-                bool isShout = e.Packet.Header == In.Shout;
-                Log($"Modifying incoming {(isShout ? "shout" : "chat")} packet: \"{message}\"");
-                message = isShout ? message.ToUpper() : message.ToLower();
-
-                // Replace the string after the first int in the packet
-                e.Packet.ReplaceString(message, 4);
+                // Replace a string after the first int (4 bytes) in the packet using a transform method
+                e.Packet.ReplaceString(s => s.ToUpper(), 4);
             }
         }
 
         [InterceptOut(nameof(Outgoing.Move))]
         private void OnInterceptMove(InterceptArgs e)
         {
-            if (TestPacketBlocking)
+            if (EnablePacketBlocking)
             {
+                // Flags the packet to be blocked, this cannot be reversed.
                 e.Block();
 
                 int x = e.Packet.ReadInt(),
