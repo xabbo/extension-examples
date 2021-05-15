@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows;
-
-using Xabbo.GEarth;
 
 namespace b7.XabboExamples.WpfApp
 {
