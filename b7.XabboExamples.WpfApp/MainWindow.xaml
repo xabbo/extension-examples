@@ -52,6 +52,8 @@
                    FontWeight="Bold"
                    Text="Packet injection" />
         <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Margin="2"
+                   TextWrapping="WrapWithOverflow"
+                   FontFamily="Verdana" FontSize="16"
                    Text="Sends a chat packet to the client / server." />
         <Button Grid.Row="7" Margin="4" Padding="8,2" Content="Send to client"
                     Command="{Binding InjectPacketClientCommand}" />
