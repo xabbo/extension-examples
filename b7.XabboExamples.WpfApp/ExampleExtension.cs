@@ -16,11 +16,18 @@ namespace b7.XabboExamples.WpfApp
         private static readonly GEarthOptions _options = new GEarthOptions
         {
             Title = "Xabbo.GEarth WPF",
-            Description = "an example extension using the Xabbo framework",
+            Description = "example extension using the Xabbo framework",
             Author = "b7",
             Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?",
             ShowEventButton = true
         };
+
+        private StringBuilder _log = new();
+        public string LogText
+        {
+            get => _log.ToString();
+            set => Set(ref _log, new StringBuilder(value));
+        }
 
         private bool _enablePacketManipulation = false;
         public bool EnablePacketManipulation
@@ -34,13 +41,6 @@ namespace b7.XabboExamples.WpfApp
         {
             get => _enablePacketBlocking;
             set => Set(ref _enablePacketBlocking, value);
-        }
-
-        private StringBuilder _log = new();
-        public string LogText
-        {
-            get => _log.ToString();
-            set => Set(ref _log, new StringBuilder(value));
         }
 
         public ICommand InjectPacketClientCommand { get; }
@@ -62,25 +62,31 @@ namespace b7.XabboExamples.WpfApp
         protected override void OnInterceptorConnected(object? sender, EventArgs e)
         {
             base.OnInterceptorConnected(sender, e);
-            Log($"Connected to G-Earth.");
+            Log("Connected to G-Earth.");
         }
 
         protected override void OnInterceptorInitialized(object? sender, EventArgs e)
         {
             base.OnInterceptorInitialized(sender, e);
-            Log($"Extension initialized by G-Earth.");
+            Log("Extension initialized by G-Earth.");
         }
 
         protected override void OnClicked(object? sender, EventArgs e)
         {
             base.OnClicked(sender, e);
-            Log($"Extension was clicked in G-Earth.");
+            Log("Extension was clicked in G-Earth.");
         }
 
         protected override void OnGameConnected(object? sender, GameConnectedEventArgs e)
         {
+            /*
+                The base call is where this ExampleExtension instance
+                gets bound to the InterceptDispatcher, which routes
+                packets to methods decorated with InterceptIn/Out attributes (see below).
+            */
             base.OnGameConnected(sender, e);
-            Log($"Game connection established.\r\n\r\n"
+
+            Log("Game connection established.\r\n\r\n"
                 + $"               Host: {e.Host}\r\n"
                 + $"               Port: {e.Port}\r\n"
                 + $"  Client identifier: {e.Port}\r\n"
@@ -93,28 +99,30 @@ namespace b7.XabboExamples.WpfApp
         protected override void OnIntercepted(object? sender, InterceptArgs e)
         {
             base.OnIntercepted(sender, e);
-            // Do something with all intercepted packets here
+            // Do something with all intercepted packets here.
         }
 
         protected override void OnGameDisconnected(object? sender, EventArgs e)
         {
             base.OnGameDisconnected(sender, e);
-            Log($"Game connection ended.");
+            Log("Game connection ended.");
         }
 
         protected override void OnInterceptorDisconnected(object? sender, EventArgs e)
         {
             base.OnInterceptorDisconnected(sender, e);
-            Log($"Connection with G-Earth lost.");
+            Log("Connection with G-Earth lost.");
         }
 
         private void InjectPacketClientExecuted()
         {
             /*
                 Sends a Chat packet to the client.
-                Use Send to send packets to the server or client.
-                The destination is determined by the header.
+                Use the Send method to send packets to the server or client.
+                The destination is determined by the message header; as we are using an
+                incoming message header (In.Chat), the packet will be sent to the client.
             */
+
             Send(In.Chat, -1, "Hello from the Xabbo.GEarth example!", 0, 2, 0, 0);
             Log("Sent chat packet to client.");
         }
@@ -129,10 +137,11 @@ namespace b7.XabboExamples.WpfApp
         [InterceptIn(nameof(Incoming.Chat), nameof(Incoming.Shout))]
         private void OnInterceptChat(InterceptArgs e)
         {
-            // Changes incoming messages to upper-case
+            // Changes incoming messages to upper-case if enabled.
             if (EnablePacketManipulation)
             {
-                // Replace a string after the first int (4 bytes) in the packet using a transform method
+                // Replaces a string after the first int (4 bytes)
+                // in the packet using a transform function.
                 e.Packet.ReplaceString(s => s.ToUpper(), 4);
             }
         }
