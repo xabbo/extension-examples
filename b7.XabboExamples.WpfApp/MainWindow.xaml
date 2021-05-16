@@ -10,18 +10,8 @@
         d:DataContext="{d:DesignInstance Type={x:Type local:ExampleExtension}}"
         Loaded="MainWindow_Loaded">
     <Grid Margin="4">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBox
@@ -32,32 +22,47 @@
             FontFamily="Consolas"
             Text="{Binding LogText}"
             TextWrapping="Wrap" />
-        <CheckBox Grid.Row="1" Grid.ColumnSpan="2" Margin="2"
+        <Grid Grid.Row="1" IsEnabled="{Binding IsConnected}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <CheckBox Grid.ColumnSpan="2" Margin="2"
                   VerticalAlignment="Center" VerticalContentAlignment="Center"
                   FontWeight="Bold" Content="Packet manipulation"
                   IsChecked="{Binding EnablePacketManipulation}" />
-        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="4"
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Margin="4"
                    TextWrapping="WrapWithOverflow"
                    FontFamily="Verdana" FontSize="16"
                    Text="Changes incoming chat packets to upper case." />
-        <CheckBox Grid.Row="3" Grid.ColumnSpan="2" Margin="2"
+            <CheckBox Grid.Row="2" Grid.ColumnSpan="2" Margin="2"
                   VerticalAlignment="Center" VerticalContentAlignment="Center"
                   FontWeight="Bold" Content="Packet blocking"
                   IsChecked="{Binding EnablePacketBlocking}" />
-        <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Margin="4"
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Margin="4"
                    TextWrapping="WrapWithOverflow"
                    FontFamily="Verdana" FontSize="16"
                    Text="Blocks outgoing movement packets and displays the coordinates in the log." />
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Margin="2"
+            <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Margin="2"
                    FontWeight="Bold"
                    Text="Packet injection" />
-        <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Margin="2"
+            <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Margin="2"
                    TextWrapping="WrapWithOverflow"
                    FontFamily="Verdana" FontSize="16"
                    Text="Sends a chat packet to the client / server." />
-        <Button Grid.Row="7" Margin="4" Padding="8,2" Content="Send to client"
+            <Button Grid.Row="6" Margin="4" Padding="8,2" Content="Send to client"
                     Command="{Binding InjectPacketClientCommand}" />
-        <Button Grid.Row="7" Grid.Column="1" Margin="4" Padding="8,2" Content="Send to server"
+            <Button Grid.Row="6" Grid.Column="1" Margin="4" Padding="8,2" Content="Send to server"
                     Command="{Binding InjectPacketServerCommand}" />
+        </Grid>
     </Grid>
 </Window>
