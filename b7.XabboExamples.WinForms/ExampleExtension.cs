@@ -29,33 +29,27 @@ namespace b7.XabboExamples.WinForms
 
         private void Log(string message) => LogMessage?.Invoke(message);
 
-        protected override void OnInterceptorConnected(object sender, EventArgs e)
+        protected override void OnInterceptorConnected()
         {
-            base.OnInterceptorConnected(sender, e);
+            base.OnInterceptorConnected();
             Log("Connected to G-Earth.");
         }
 
-        protected override void OnInterceptorInitialized(object sender, EventArgs e)
+        protected override void OnInitialized(InterceptorInitializedEventArgs e)
         {
-            base.OnInterceptorInitialized(sender, e);
+            base.OnInitialized(e);
             Log("Extension initialized by G-Earth.");
         }
 
-        protected override void OnClicked(object sender, EventArgs e)
+        protected override void OnClicked()
         {
-            base.OnClicked(sender, e);
+            base.OnClicked();
             Log("Extension was clicked in G-Earth.");
         }
 
-        protected override void OnGameConnected(object sender, GameConnectedEventArgs e)
+        protected override void OnConnected(GameConnectedEventArgs e)
         {
-            /*
-                The base call is where this ExampleExtension instance
-                gets bound to the InterceptDispatcher, which routes
-                packets to methods decorated with InterceptIn/Out attributes (see below).
-            */
-            base.OnGameConnected(sender, e);
-
+            base.OnConnected(e);
             Log("Game connection established.\r\n\r\n"
                 + $"               Host: {e.Host}\r\n"
                 + $"               Port: {e.Port}\r\n"
@@ -66,22 +60,21 @@ namespace b7.XabboExamples.WinForms
             );
         }
 
-        protected override void OnIntercepted(object sender, InterceptArgs e)
+        protected override void OnIntercepted(InterceptArgs e)
         {
-            base.OnIntercepted(sender, e);
-
+            base.OnIntercepted(e);
             // Do something with all intercepted packets here.
         }
 
-        protected override void OnGameDisconnected(object sender, EventArgs e)
+        protected override void OnDisconnected()
         {
-            base.OnGameDisconnected(sender, e);
+            base.OnDisconnected();
             Log("Game connection ended.");
         }
 
-        protected override void OnInterceptorDisconnected(object sender, EventArgs e)
+        protected override void OnInterceptorDisconnected()
         {
-            base.OnInterceptorDisconnected(sender, e);
+            base.OnInterceptorDisconnected();
             Log("Connection with G-Earth lost.");
         }
 
