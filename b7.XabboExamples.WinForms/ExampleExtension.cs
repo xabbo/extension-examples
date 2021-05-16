@@ -53,7 +53,7 @@ namespace b7.XabboExamples.WinForms
             Log("Game connection established.\r\n\r\n"
                 + $"               Host: {e.Host}\r\n"
                 + $"               Port: {e.Port}\r\n"
-                + $"  Client identifier: {e.Port}\r\n"
+                + $"  Client identifier: {e.ClientIdentifier}\r\n"
                 + $"        Client type: {e.ClientType}\r\n"
                 + $"     Client version: {e.ClientVersion}\r\n"
                 + $"      Message infos: {e.Messages.Count:N0}\r\n"
