@@ -7,8 +7,7 @@
         mc:Ignorable="d"
         Title="Xabbo.GEarth WPF example extension" Height="520" Width="500"
         FontSize="16"
-        d:DataContext="{d:DesignInstance Type={x:Type local:ExampleExtension}}"
-        Loaded="MainWindow_Loaded">
+        d:DataContext="{d:DesignInstance Type={x:Type local:ExampleExtension}}">
     <Grid Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

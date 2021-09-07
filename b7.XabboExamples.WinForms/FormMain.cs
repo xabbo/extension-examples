@@ -7,28 +7,12 @@ namespace b7.XabboExamples.WinForms
     {
         private readonly ExampleExtension _extension;
 
-        public FormMain()
+        public FormMain(ExampleExtension extension)
         {
-            _extension = new ExampleExtension(Program.Port);
+            _extension = extension;
             _extension.LogMessage += OnLogMessage;
 
             InitializeComponent();
-        }
-
-        private async void FormMain_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                await _extension.RunAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"An unhandled error occurred: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error
-                );
-                Close();
-            }
         }
 
         private void OnLogMessage(string message)

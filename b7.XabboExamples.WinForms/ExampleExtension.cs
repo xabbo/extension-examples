@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 using Xabbo.GEarth;
 using Xabbo.Interceptor;
@@ -9,22 +8,13 @@ namespace b7.XabboExamples.WinForms
 {
     public class ExampleExtension : GEarthExtension
     {
-        private static readonly GEarthOptions _options = new GEarthOptions
-        {
-            Title = "Xabbo.GEarth WinForms",
-            Description = "example extension using the Xabbo framework",
-            Author = "b7",
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?",
-            ShowEventButton = true
-        };
-
         public event Action<string> LogMessage;
 
         public bool EnablePacketManipulation { get; set; }
         public bool EnablePacketBlocking { get; set; }
 
-        public ExampleExtension(int port)
-            : base(_options, port)
+        public ExampleExtension(GEarthOptions options)
+            : base(options)
         { }
 
         private void Log(string message) => LogMessage?.Invoke(message);
@@ -39,12 +29,6 @@ namespace b7.XabboExamples.WinForms
         {
             base.OnInitialized(e);
             Log("Extension initialized by G-Earth.");
-        }
-
-        protected override void OnClicked()
-        {
-            base.OnClicked();
-            Log("Extension was clicked in G-Earth.");
         }
 
         protected override void OnConnected(GameConnectedEventArgs e)
@@ -72,12 +56,6 @@ namespace b7.XabboExamples.WinForms
             Log("Game connection ended.");
         }
 
-        protected override void OnInterceptorDisconnected()
-        {
-            base.OnInterceptorDisconnected();
-            Log("Connection with G-Earth lost.");
-        }
-
         public void InjectPacketClient()
         {
             /*
@@ -98,7 +76,9 @@ namespace b7.XabboExamples.WinForms
             Log("Sent chat packet to server.");
         }
 
-        [InterceptIn(nameof(Incoming.Chat), nameof(Incoming.Shout))]
+        // The extension binds itself to its own InterceptDispatcher when a connection to the game is established
+        // so that methods decorated with intercept attributes are invoked when the specified messages are intercepted.
+        [InterceptIn("Chat", "Shout")]
         private void OnInterceptChat(InterceptArgs e)
         {
             // Changes incoming messages to upper-case if enabled.
@@ -106,7 +86,7 @@ namespace b7.XabboExamples.WinForms
             {
                 // Replaces a string after the first int (4 bytes)
                 // in the packet using a transform function.
-                e.Packet.ReplaceString(s => s.ToUpper(), 4);
+                e.Packet.ReplaceAt(4, s => s.ToUpper());
             }
         }
 

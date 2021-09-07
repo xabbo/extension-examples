@@ -1,27 +1,31 @@
 ﻿using System;
 using System.Windows;
-using System.Linq;
+
+using Xabbo.GEarth;
 
 namespace b7.XabboExamples.WpfApp
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        public static int Port { get; private set; }
+        public ExampleExtension? Extension { get; private set; }
+        public GEarthApplicationHandler? Handler { get; private set; }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            Port = 9092;
+            GEarthOptions options = GEarthOptions.Default
+                .WithTitle("Xabbo WPF") // defaults to the entry assembly's name
+                //.WithVersion("1.0.0") // defaults to the entry assembly's version
+                .WithDescription("example extension using the Xabbo framework")
+                .WithAuthor("b7")
+                .WithArguments(e.Args); // Applies the command-line arguments to the options
 
-            int index = Array.IndexOf(e.Args, "-p");
-            if (index >= 0 && e.Args.Length > (index + 1))
-            {
-                Port = int.Parse(e.Args[index + 1]);
-            }
+            Extension = new ExampleExtension(options);
+            MainWindow = new MainWindow(Extension);
+            Handler = new GEarthApplicationHandler(Extension, this);
+
+            await Handler.RunAsync();
         }
     }
 }

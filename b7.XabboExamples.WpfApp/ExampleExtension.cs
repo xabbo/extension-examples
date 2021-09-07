@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Reflection;
 using System.Windows.Input;
 
 using GalaSoft.MvvmLight.Command;
@@ -13,15 +12,6 @@ namespace b7.XabboExamples.WpfApp
 {
     public class ExampleExtension : GEarthExtension
     {
-        private static readonly GEarthOptions _options = new GEarthOptions
-        {
-            Title = "Xabbo.GEarth WPF",
-            Description = "example extension using the Xabbo framework",
-            Author = "b7",
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?",
-            ShowEventButton = true
-        };
-
         private StringBuilder _log = new();
         public string LogText
         {
@@ -29,14 +19,14 @@ namespace b7.XabboExamples.WpfApp
             set => Set(ref _log, new StringBuilder(value));
         }
 
-        private bool _enablePacketManipulation = false;
+        private bool _enablePacketManipulation;
         public bool EnablePacketManipulation
         {
             get => _enablePacketManipulation;
             set => Set(ref _enablePacketManipulation, value);
         }
 
-        private bool _enablePacketBlocking = false;
+        private bool _enablePacketBlocking;
         public bool EnablePacketBlocking
         {
             get => _enablePacketBlocking;
@@ -46,8 +36,8 @@ namespace b7.XabboExamples.WpfApp
         public ICommand InjectPacketClientCommand { get; }
         public ICommand InjectPacketServerCommand { get; }
 
-        public ExampleExtension(int port)
-            : base(_options, port)
+        public ExampleExtension(GEarthOptions options)
+            : base(options)
         {
             InjectPacketClientCommand = new RelayCommand(InjectPacketClientExecuted);
             InjectPacketServerCommand = new RelayCommand(InjectPacketServerExecuted);
@@ -62,37 +52,42 @@ namespace b7.XabboExamples.WpfApp
         protected override void OnInterceptorConnected()
         {
             base.OnInterceptorConnected();
+
             Log("Connected to G-Earth.");
         }
 
         protected override void OnInitialized(InterceptorInitializedEventArgs e)
         {
             base.OnInitialized(e);
-            Log("Extension initialized by G-Earth.");
+
+            Log($"Extension initialized by G-Earth. (game connected = {e.IsGameConnected})");
         }
 
         protected override void OnClicked()
         {
             base.OnClicked();
-            Log("Extension was clicked in G-Earth.");
+
+            // Extension event (green play) button was clicked in G-Earth
         }
 
         protected override void OnConnected(GameConnectedEventArgs e)
         {
             base.OnConnected(e);
+
             Log("Game connection established.\r\n\r\n"
                 + $"               Host: {e.Host}\r\n"
                 + $"               Port: {e.Port}\r\n"
                 + $"  Client identifier: {e.ClientIdentifier}\r\n"
                 + $"        Client type: {e.ClientType}\r\n"
                 + $"     Client version: {e.ClientVersion}\r\n"
-                + $"      Message infos: {e.Messages.Count:N0}\r\n"
+                + $"       Message info: {e.Messages.Count:N0} messages\r\n"
             );
         }
 
         protected override void OnIntercepted(InterceptArgs e)
         {
             base.OnIntercepted(e);
+
             // Do something with all intercepted packets here.
         }
 
@@ -102,10 +97,12 @@ namespace b7.XabboExamples.WpfApp
             Log("Game connection ended.");
         }
 
-        protected override void OnInterceptorDisconnected()
+        protected override void OnInterceptorDisconnected(DisconnectedEventArgs e)
         {
-            base.OnInterceptorDisconnected();
-            Log("Connection with G-Earth lost.");
+            base.OnInterceptorDisconnected(e);
+
+            // For a typical extension, the application would usually shut down upon disconnection with G-Earth.
+            // For this example extension, this is handled in the App class.
         }
 
         private void InjectPacketClientExecuted()
@@ -128,7 +125,9 @@ namespace b7.XabboExamples.WpfApp
             Log("Sent chat packet to server.");
         }
 
-        [InterceptIn(nameof(Incoming.Chat), nameof(Incoming.Shout))]
+        // The extension binds itself to its own InterceptDispatcher when a connection to the game is established
+        // so that methods decorated with intercept attributes are invoked when the specified messages are intercepted.
+        [InterceptIn("Chat", "Shout")]
         private void OnInterceptChat(InterceptArgs e)
         {
             // Changes incoming messages to upper-case if enabled.
@@ -136,10 +135,10 @@ namespace b7.XabboExamples.WpfApp
             {
                 // Replaces a string after the first int (4 bytes)
                 // in the packet using a transform function.
-                e.Packet.ReplaceString(s => s.ToUpper(), 4);
+                e.Packet.ReplaceAt(4, s => s.ToUpper());
             }
         }
-
+        
         [InterceptOut(nameof(Outgoing.Move))]
         private void OnInterceptMove(InterceptArgs e)
         {

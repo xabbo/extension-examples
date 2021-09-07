@@ -169,6 +169,7 @@ namespace b7.XabboExamples.WinForms
             this.textBoxLog.Location = new System.Drawing.Point(3, 3);
             this.textBoxLog.Multiline = true;
             this.textBoxLog.Name = "textBoxLog";
+            this.textBoxLog.ReadOnly = true;
             this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxLog.Size = new System.Drawing.Size(523, 333);
             this.textBoxLog.TabIndex = 4;
@@ -184,7 +185,6 @@ namespace b7.XabboExamples.WinForms
             this.Name = "FormMain";
             this.Padding = new System.Windows.Forms.Padding(4);
             this.Text = "Xabbo.GEarth WinForms example";
-            this.Load += new System.EventHandler(this.FormMain_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
