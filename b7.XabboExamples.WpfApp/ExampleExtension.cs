@@ -101,8 +101,8 @@ namespace b7.XabboExamples.WpfApp
         {
             base.OnInterceptorDisconnected(e);
 
-            // For a typical extension, the application would usually shut down upon disconnection with G-Earth.
-            // For this example extension, this is handled in the App class.
+            // For a typical extension, the application should shut down upon disconnection with G-Earth.
+            // In this example, this is handled by the GEarthApplicationHandler class.
         }
 
         private void InjectPacketClientExecuted()
@@ -126,7 +126,7 @@ namespace b7.XabboExamples.WpfApp
         }
 
         // The extension binds itself to its own InterceptDispatcher when a connection to the game is established
-        // so that methods decorated with intercept attributes are invoked when the specified messages are intercepted.
+        // so that methods decorated with intercept attributes are invoked when target messages are intercepted.
         [InterceptIn("Chat", "Shout")]
         private void OnInterceptChat(InterceptArgs e)
         {

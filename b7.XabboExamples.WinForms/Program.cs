@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Xabbo.GEarth;
@@ -17,6 +18,7 @@ namespace b7.XabboExamples.WinForms
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Create an extension using the specified options
             ExampleExtension extension = new ExampleExtension(
                 GEarthOptions.Default
                     .WithTitle("Xabbo WinForms") // defaults to the entry assembly's name
@@ -26,8 +28,16 @@ namespace b7.XabboExamples.WinForms
                     .WithArguments(args) // Applies the command-line arguments to the options
             );
 
-            _ = new GEarthFormHandler(extension, new FormMain(extension)).RunAsync();
+            // Create the main form, passing in the extension
+            FormMain form = new FormMain(extension);
 
+            // Create the extension handler
+            GEarthFormHandler handler = new GEarthFormHandler(form, extension);
+
+            // Run the extension
+            _ = handler.RunAsync();
+
+            // Run the application
             Application.Run();
         }
     }

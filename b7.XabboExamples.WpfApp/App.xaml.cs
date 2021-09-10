@@ -14,17 +14,23 @@ namespace b7.XabboExamples.WpfApp
         {
             base.OnStartup(e);
 
-            GEarthOptions options = GEarthOptions.Default
-                .WithTitle("Xabbo WPF") // defaults to the entry assembly's name
-                //.WithVersion("1.0.0") // defaults to the entry assembly's version
-                .WithDescription("example extension using the Xabbo framework")
-                .WithAuthor("b7")
-                .WithArguments(e.Args); // Applies the command-line arguments to the options
+            // Create an extension using the specified options
+            Extension = new ExampleExtension(
+                GEarthOptions.Default
+                    .WithTitle("Xabbo WPF") // defaults to the entry assembly's name
+                    //.WithVersion("1.0.0") // defaults to the entry assembly's version
+                    .WithDescription("example extension using the Xabbo framework")
+                    .WithAuthor("b7")
+                    .WithArguments(e.Args) // Applies the command-line arguments to the options
+            );
 
-            Extension = new ExampleExtension(options);
+            // Create the main window, passing in the extension
             MainWindow = new MainWindow(Extension);
-            Handler = new GEarthApplicationHandler(Extension, this);
 
+            // Create the extension handler
+            Handler = new GEarthApplicationHandler(this, Extension);
+
+            // Run the extension
             await Handler.RunAsync();
         }
     }

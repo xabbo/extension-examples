@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Xabbo.GEarth;
-using Xabbo.Interceptor;
 using Xabbo.Messages;
+using Xabbo.Interceptor;
+using Xabbo.GEarth;
 
 namespace b7.XabboExamples.WinForms
 {
@@ -56,6 +56,14 @@ namespace b7.XabboExamples.WinForms
             Log("Game connection ended.");
         }
 
+        protected override void OnInterceptorDisconnected(DisconnectedEventArgs e)
+        {
+            base.OnInterceptorDisconnected(e);
+
+            // For a typical extension, the application should shut down upon disconnection with G-Earth.
+            // In this example, this is handled by the GEarthFormHandler class.
+        }
+
         public void InjectPacketClient()
         {
             /*
@@ -77,7 +85,7 @@ namespace b7.XabboExamples.WinForms
         }
 
         // The extension binds itself to its own InterceptDispatcher when a connection to the game is established
-        // so that methods decorated with intercept attributes are invoked when the specified messages are intercepted.
+        // so that methods decorated with intercept attributes are invoked when target messages are intercepted.
         [InterceptIn("Chat", "Shout")]
         private void OnInterceptChat(InterceptArgs e)
         {

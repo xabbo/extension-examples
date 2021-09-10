@@ -7,21 +7,25 @@ using Xabbo.Interceptor;
 
 namespace b7.XabboExamples.WinForms
 {
-    // Provides extension behaviour such as showing/hiding the form
-    // and shutting down the application when the connection to G-Earth is lost.
+    /*
+     * This helper class handles the following basic extension functionality:
+     * - Opening / focusing the window when the extension is clicked in G-Earth.
+     * - Hiding the window when closed by the user.
+     * - Shutting down the extension when the connection to G-Earth is lost.
+     */
     public class GEarthFormHandler
     {
-        public GEarthExtension Extension { get; }
         public Form Form { get; }
+        public GEarthExtension Extension { get; }
 
-        public GEarthFormHandler(GEarthExtension extension, Form form)
+        public GEarthFormHandler(Form form, GEarthExtension extension)
         {
+            Form = form;
+            Form.FormClosing += OnFormClosing;
+
             Extension = extension;
             Extension.Clicked += OnExtensionClicked;
             Extension.InterceptorDisconnected += OnInterceptorDisconnected;
-
-            Form = form;
-            Form.FormClosing += OnFormClosing;
         }
 
         public async Task RunAsync()
@@ -32,23 +36,21 @@ namespace b7.XabboExamples.WinForms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error
-                );
+                // Shows an error message and shuts down when an unhandled error occurs.
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
         }
 
         private void OnExtensionClicked(object sender, EventArgs e)
         {
-            // Show the form if it is not currently visible.
+            // Shows the form if it is not currently visible.
             if (!Form.Visible)
             {
                 Form.Show();
             }
 
-            // Attempt to bring the extension form to the foreground.
+            // Attempts to bring the extension form to the foreground.
             Form.Activate();
             Form.BringToFront();
         }
@@ -61,7 +63,7 @@ namespace b7.XabboExamples.WinForms
 
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
-            // Hide the form if the extension is still connected to G-Earth.
+            // Hides the form instead of closing if the extension is still connected to G-Earth.
             if (Extension.IsInterceptorConnected)
             {
                 e.Cancel = true;
