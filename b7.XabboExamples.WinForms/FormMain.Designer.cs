@@ -39,18 +39,23 @@ namespace b7.XabboExamples.WinForms
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxLog = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonInjectClient
             // 
+            this.buttonInjectClient.AutoSize = true;
+            this.buttonInjectClient.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.buttonInjectClient.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonInjectClient.Location = new System.Drawing.Point(3, 477);
+            this.buttonInjectClient.Location = new System.Drawing.Point(3, 385);
             this.buttonInjectClient.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonInjectClient.Name = "buttonInjectClient";
             this.buttonInjectClient.Size = new System.Drawing.Size(258, 29);
             this.buttonInjectClient.TabIndex = 0;
-            this.buttonInjectClient.Text = "Send to client";
+            this.buttonInjectClient.Text = "Send chat packet to client";
             this.buttonInjectClient.UseVisualStyleBackColor = true;
             this.buttonInjectClient.Click += new System.EventHandler(this.ButtonInjectClient_Click);
             // 
@@ -59,7 +64,7 @@ namespace b7.XabboExamples.WinForms
             this.checkBoxManipulate.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.checkBoxManipulate, 2);
             this.checkBoxManipulate.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.checkBoxManipulate.Location = new System.Drawing.Point(3, 342);
+            this.checkBoxManipulate.Location = new System.Drawing.Point(3, 250);
             this.checkBoxManipulate.Name = "checkBoxManipulate";
             this.checkBoxManipulate.Size = new System.Drawing.Size(169, 23);
             this.checkBoxManipulate.TabIndex = 1;
@@ -71,7 +76,7 @@ namespace b7.XabboExamples.WinForms
             // 
             this.label1.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.label1, 2);
-            this.label1.Location = new System.Drawing.Point(3, 368);
+            this.label1.Location = new System.Drawing.Point(3, 276);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(309, 19);
             this.label1.TabIndex = 2;
@@ -82,7 +87,7 @@ namespace b7.XabboExamples.WinForms
             this.checkBoxBlock.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.checkBoxBlock, 2);
             this.checkBoxBlock.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.checkBoxBlock.Location = new System.Drawing.Point(3, 390);
+            this.checkBoxBlock.Location = new System.Drawing.Point(3, 298);
             this.checkBoxBlock.Name = "checkBoxBlock";
             this.checkBoxBlock.Size = new System.Drawing.Size(136, 23);
             this.checkBoxBlock.TabIndex = 1;
@@ -94,7 +99,7 @@ namespace b7.XabboExamples.WinForms
             // 
             this.label2.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.label2, 2);
-            this.label2.Location = new System.Drawing.Point(3, 416);
+            this.label2.Location = new System.Drawing.Point(3, 324);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(463, 19);
             this.label2.TabIndex = 2;
@@ -114,11 +119,17 @@ namespace b7.XabboExamples.WinForms
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxManipulate, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.textBoxLog, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label5, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.label6, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 0, 10);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(4, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 8;
+            this.tableLayoutPanel1.RowCount = 11;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -131,13 +142,15 @@ namespace b7.XabboExamples.WinForms
             // 
             // buttonInjectServer
             // 
+            this.buttonInjectServer.AutoSize = true;
+            this.buttonInjectServer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.buttonInjectServer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonInjectServer.Location = new System.Drawing.Point(267, 477);
+            this.buttonInjectServer.Location = new System.Drawing.Point(267, 385);
             this.buttonInjectServer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonInjectServer.Name = "buttonInjectServer";
             this.buttonInjectServer.Size = new System.Drawing.Size(259, 29);
             this.buttonInjectServer.TabIndex = 0;
-            this.buttonInjectServer.Text = "Send to server";
+            this.buttonInjectServer.Text = "Send wave packet to server";
             this.buttonInjectServer.UseVisualStyleBackColor = true;
             this.buttonInjectServer.Click += new System.EventHandler(this.ButtonInjectServer_Click);
             // 
@@ -145,17 +158,17 @@ namespace b7.XabboExamples.WinForms
             // 
             this.label4.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.label4, 2);
-            this.label4.Location = new System.Drawing.Point(3, 454);
+            this.label4.Location = new System.Drawing.Point(3, 362);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(275, 19);
+            this.label4.Size = new System.Drawing.Size(243, 19);
             this.label4.TabIndex = 2;
-            this.label4.Text = "Sends a chat packet to the client / server.";
+            this.label4.Text = "Sends a packet to the client / server.";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(3, 435);
+            this.label3.Location = new System.Drawing.Point(3, 343);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(118, 19);
             this.label3.TabIndex = 3;
@@ -171,8 +184,44 @@ namespace b7.XabboExamples.WinForms
             this.textBoxLog.Name = "textBoxLog";
             this.textBoxLog.ReadOnly = true;
             this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxLog.Size = new System.Drawing.Size(523, 333);
+            this.textBoxLog.Size = new System.Drawing.Size(523, 241);
             this.textBoxLog.TabIndex = 4;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.label5, 2);
+            this.label5.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label5.Location = new System.Drawing.Point(3, 418);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(218, 19);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Asynchronous packet retrieval";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.label6, 2);
+            this.label6.Location = new System.Drawing.Point(3, 437);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(511, 38);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Sends a request packet for the user\'s data to the server, then asynchronously rec" +
+    "eives the response packet.";
+            // 
+            // button1
+            // 
+            this.button1.AutoSize = true;
+            this.button1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.SetColumnSpan(this.button1, 2);
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.Location = new System.Drawing.Point(3, 478);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(523, 29);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Retrieve user info";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.ButtonRetrieveInfo_Click);
             // 
             // FormMain
             // 
@@ -203,6 +252,9 @@ namespace b7.XabboExamples.WinForms
         private System.Windows.Forms.CheckBox checkBoxBlock;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxLog;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace b7.XabboExamples.WpfApp
 {
@@ -15,6 +16,11 @@ namespace b7.XabboExamples.WpfApp
             DataContext = _extension;
 
             InitializeComponent();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBoxLog.ScrollToEnd();
         }
     }
 }

@@ -14,12 +14,14 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBox
+            x:Name="textBoxLog"
             Grid.ColumnSpan="2"
             Margin="2"
             IsReadOnly="True" 
             VerticalScrollBarVisibility="Visible"
             FontFamily="Consolas"
             Text="{Binding LogText}"
+            TextChanged="TextBox_TextChanged"
             TextWrapping="Wrap" />
         <Grid Grid.Row="1" IsEnabled="{Binding IsConnected}">
             <Grid.ColumnDefinitions>
@@ -34,7 +36,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            
             <CheckBox Grid.ColumnSpan="2" Margin="2"
                   VerticalAlignment="Center" VerticalContentAlignment="Center"
                   FontWeight="Bold" Content="Packet manipulation"
@@ -43,6 +49,7 @@
                    TextWrapping="WrapWithOverflow"
                    FontFamily="Verdana" FontSize="16"
                    Text="Changes incoming chat packets to upper case." />
+            
             <CheckBox Grid.Row="2" Grid.ColumnSpan="2" Margin="2"
                   VerticalAlignment="Center" VerticalContentAlignment="Center"
                   FontWeight="Bold" Content="Packet blocking"
@@ -51,17 +58,29 @@
                    TextWrapping="WrapWithOverflow"
                    FontFamily="Verdana" FontSize="16"
                    Text="Blocks outgoing movement packets and displays the coordinates in the log." />
+            
             <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Margin="2"
                    FontWeight="Bold"
                    Text="Packet injection" />
             <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Margin="2"
                    TextWrapping="WrapWithOverflow"
                    FontFamily="Verdana" FontSize="16"
-                   Text="Sends a chat packet to the client / server." />
-            <Button Grid.Row="6" Margin="4" Padding="8,2" Content="Send to client"
+                   Text="Sends a packet to the client / server." />
+            <Button Grid.Row="6" Margin="4" Padding="8,2" Content="Send chat packet to client"
                     Command="{Binding InjectPacketClientCommand}" />
-            <Button Grid.Row="6" Grid.Column="1" Margin="4" Padding="8,2" Content="Send to server"
+            <Button Grid.Row="6" Grid.Column="1" Margin="4" Padding="8,2" Content="Send wave packet to server"
                     Command="{Binding InjectPacketServerCommand}" />
+
+            <TextBlock Grid.Row="7" Grid.ColumnSpan="2" Margin="2"
+                   FontWeight="Bold"
+                   Text="Asynchronous packet retrieval" />
+            <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Margin="2"
+                   TextWrapping="WrapWithOverflow"
+                   FontFamily="Verdana" FontSize="16"
+                   Text="Sends a request packet for the user's data to the server, then asynchronously receives the response packet." />
+            <Button Grid.Row="9" Grid.ColumnSpan="2" Margin="4" Padding="8,2" Content="Retrieve user info"
+                    Command="{Binding RetrieveInfoCommand}" />
+
         </Grid>
     </Grid>
 </Window>

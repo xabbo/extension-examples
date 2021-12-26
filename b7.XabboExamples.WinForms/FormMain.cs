@@ -38,5 +38,10 @@ namespace b7.XabboExamples.WinForms
         {
             _extension.EnablePacketBlocking = checkBoxBlock.Checked;
         }
+
+        private async void ButtonRetrieveInfo_Click(object sender, EventArgs e)
+        {
+            await _extension.RetrieveInfoAsync();
+        }
     }
 }

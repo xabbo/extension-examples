@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using Xabbo.Messages;
 using Xabbo.Interceptor;
@@ -64,6 +65,27 @@ namespace b7.XabboExamples.WinForms
             // In this example, this is handled by the GEarthFormHandler class.
         }
 
+        /* - Sending packets - */
+
+        public void InjectPacketServer()
+        {
+            /* 
+                Sends a packet to the server to make your avatar wave.
+                Message names are based on the Unity client.
+                Here we are using Out.Expression, however in the Flash
+                client the message is called AvatarExpression.
+                The mapping between Unity and Flash message names 
+                (ex. Avatar : AvatarExpression) is defined in messages.ini.
+             */
+
+            Send(Out.Expression, 1);
+
+            // It is possible to use Flash message names by using a string:
+            Send(Out["AvatarExpression"], 1);
+
+            Log("Sent packet to server.");
+        }
+
         public void InjectPacketClient()
         {
             /*
@@ -77,19 +99,13 @@ namespace b7.XabboExamples.WinForms
             Log("Sent chat packet to client.");
         }
 
-        public void InjectPacketServer()
-        {
-            // Sends a Chat packet to the server.
-            Send(Out.Chat, "Hello, world", 0, -1);
-            Log("Sent chat packet to server.");
-        }
+        /* - Intercepting packets - */
 
-        // The extension binds itself to its own InterceptDispatcher when a connection to the game is established
-        // so that methods decorated with intercept attributes are invoked when target messages are intercepted.
-        [InterceptIn("Chat", "Shout")]
+        // Packets can be intercepted using InterceptIn/Out attributes.
+        [InterceptIn(nameof(Incoming.Chat), nameof(Incoming.Shout))]
         private void OnInterceptChat(InterceptArgs e)
         {
-            // Changes incoming messages to upper-case if enabled.
+            // Changes incoming chat messages to upper-case if enabled.
             if (EnablePacketManipulation)
             {
                 // Replaces a string after the first int (4 bytes)
@@ -98,7 +114,9 @@ namespace b7.XabboExamples.WinForms
             }
         }
 
-        [InterceptOut(nameof(Outgoing.Move))]
+        // "MoveAvatar" is used here to specify the Flash message name.
+        // The Unity message name would be "Move" or nameof(Outgoing.Move).
+        [InterceptOut("MoveAvatar")]
         private void OnInterceptMove(InterceptArgs e)
         {
             if (EnablePacketBlocking)
@@ -110,6 +128,31 @@ namespace b7.XabboExamples.WinForms
                     y = e.Packet.ReadInt();
 
                 Log($"Blocked move packet to ({x}, {y}).");
+            }
+        }
+
+        /* - Sending and receiving packets asynchronously - */
+        public async Task RetrieveInfoAsync()
+        {
+            try
+            {
+                Log("Retrieving user info...");
+
+                // Send InfoRetrieve to get the user's data.
+                await SendAsync(Out.InfoRetrieve);
+
+                // Wait 5000ms to receive the UserObject packet.
+                // Specifying block: true will prevent the packet being sent to the client.
+                IPacket packet = await ReceiveAsync(In.UserObject, 5000, block: true);
+
+                int userId = packet.ReadInt();
+                string userName = packet.ReadString();
+
+                Log($"Received user info\r\nID: {userId}\r\nName: {userName}");
+            }
+            catch (OperationCanceledException)
+            {
+                Log("Receive task timed out.");
             }
         }
     }

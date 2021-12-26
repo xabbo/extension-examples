@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 using GalaSoft.MvvmLight.Command;
 
@@ -35,12 +36,14 @@ namespace b7.XabboExamples.WpfApp
 
         public ICommand InjectPacketClientCommand { get; }
         public ICommand InjectPacketServerCommand { get; }
+        public ICommand RetrieveInfoCommand { get; }
 
         public ExampleExtension(GEarthOptions options)
             : base(options)
         {
             InjectPacketClientCommand = new RelayCommand(InjectPacketClientExecuted);
             InjectPacketServerCommand = new RelayCommand(InjectPacketServerExecuted);
+            RetrieveInfoCommand = new RelayCommand(RetrieveInfoExecuted);
         }
 
         public void Log(string message)
@@ -105,7 +108,28 @@ namespace b7.XabboExamples.WpfApp
             // In this example, this is handled by the GEarthApplicationHandler class.
         }
 
-        private void InjectPacketClientExecuted()
+        /* - Sending packets - */
+
+        public void InjectPacketServerExecuted()
+        {
+            /* 
+                Sends a packet to the server to make your avatar wave.
+                Message names are based on the Unity client.
+                Here we are using Out.Expression, however in the Flash
+                client the message is called AvatarExpression.
+                The mapping between Unity and Flash message names 
+                (ex. Avatar : AvatarExpression) is defined in messages.ini.
+             */
+
+            Send(Out.Expression, 1);
+
+            // It is possible to use Flash message names by using a string:
+            Send(Out["AvatarExpression"], 1);
+
+            Log("Sent packet to server.");
+        }
+
+        public void InjectPacketClientExecuted()
         {
             /*
                 Sends a Chat packet to the client.
@@ -118,19 +142,13 @@ namespace b7.XabboExamples.WpfApp
             Log("Sent chat packet to client.");
         }
 
-        private void InjectPacketServerExecuted()
-        {
-            // Sends a Chat packet to the server.
-            Send(Out.Chat, "Hello, world", 0, -1);
-            Log("Sent chat packet to server.");
-        }
+        /* - Intercepting packets - */
 
-        // The extension binds itself to its own InterceptDispatcher when a connection to the game is established
-        // so that methods decorated with intercept attributes are invoked when target messages are intercepted.
-        [InterceptIn("Chat", "Shout")]
+        // Packets can be intercepted using InterceptIn/Out attributes.
+        [InterceptIn(nameof(Incoming.Chat), nameof(Incoming.Shout))]
         private void OnInterceptChat(InterceptArgs e)
         {
-            // Changes incoming messages to upper-case if enabled.
+            // Changes incoming chat messages to upper-case if enabled.
             if (EnablePacketManipulation)
             {
                 // Replaces a string after the first int (4 bytes)
@@ -138,8 +156,10 @@ namespace b7.XabboExamples.WpfApp
                 e.Packet.ReplaceAt(4, s => s.ToUpper());
             }
         }
-        
-        [InterceptOut(nameof(Outgoing.Move))]
+
+        // "MoveAvatar" is used here to specify the Flash message name.
+        // The Unity message name would be "Move" or nameof(Outgoing.Move).
+        [InterceptOut("MoveAvatar")]
         private void OnInterceptMove(InterceptArgs e)
         {
             if (EnablePacketBlocking)
@@ -151,6 +171,33 @@ namespace b7.XabboExamples.WpfApp
                     y = e.Packet.ReadInt();
 
                 Log($"Blocked move packet to ({x}, {y}).");
+            }
+        }
+
+        /* - Sending and receiving packets asynchronously - */
+        public async void RetrieveInfoExecuted() => await RetrieveInfoAsync();
+
+        private async Task RetrieveInfoAsync()
+        {
+            try
+            {
+                Log("Retrieving user info...");
+
+                // Send InfoRetrieve to get the user's data.
+                await SendAsync(Out.InfoRetrieve);
+
+                // Wait 5000ms to receive the UserObject packet.
+                // Specifying block: true will prevent the packet being sent to the client.
+                IPacket packet = await ReceiveAsync(In.UserObject, 5000, block: true);
+
+                int userId = packet.ReadInt();
+                string userName = packet.ReadString();
+
+                Log($"Received user info\r\nID: {userId}\r\nName: {userName}");
+            }
+            catch (OperationCanceledException)
+            {
+                Log("Receive task timed out.");
             }
         }
     }
