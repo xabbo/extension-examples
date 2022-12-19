@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
-        <Nullable>enable</Nullable>
-        <UseWPF>true</UseWPF>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
-        <PackageReference Include="Xabbo.GEarth" Version="1.0.0-beta.2" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
+    <PackageReference Include="Xabbo.GEarth" Version="1.0.0-beta.3" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Include="$(SolutionDir)\Xabbo.Messages\messages.ini">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SolutionDir)\Xabbo.Messages\messages.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

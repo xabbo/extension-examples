@@ -1,44 +1,42 @@
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Xabbo.GEarth;
 
-namespace b7.XabboExamples.WinForms
+namespace b7.XabboExamples.WinForms;
+
+static class Program
 {
-    static class Program
+    /// <summary>
+    ///  The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    static void Main(string[] args)
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main(string[] args)
-        {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+        Application.SetHighDpiMode(HighDpiMode.SystemAware);
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
 
-            // Create an extension using the specified options
-            ExampleExtension extension = new ExampleExtension(
-                GEarthOptions.Default
-                    .WithName("Xabbo WinForms") // defaults to the entry assembly's name
-                    //.WithVersion("1.0.0") // defaults to the entry assembly's version
-                    .WithDescription("example extension using the Xabbo framework")
-                    .WithAuthor("b7")
-                    .WithArguments(args) // Applies the command-line arguments to the options
-            );
+        // Create an extension using the specified options
+        var extension = new ExampleExtension(
+            GEarthOptions.FromArgs(args) with { 
+                Title = "Xabbo WinForms", // defaults to the entry assembly's name
+                // Version = "1.0.0", // defaults to the entry assembly's version
+                Description = "example extension using the Xabbo framework",
+                Author = "b7",
+            }
+        );
 
-            // Create the main form, passing in the extension
-            FormMain form = new FormMain(extension);
+        // Create the main form, passing in the extension
+        var form = new FormMain(extension);
 
-            // Create the extension handler
-            GEarthFormHandler handler = new GEarthFormHandler(form, extension);
+        // Create the extension handler
+        var handler = new GEarthFormHandler(form, extension);
 
-            // Run the extension
-            _ = handler.RunAsync();
+        // Run the extension
+        _ = handler.RunAsync();
 
-            // Run the application
-            Application.Run();
-        }
+        // Run the application
+        Application.Run();
     }
 }

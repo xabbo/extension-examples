@@ -23,7 +23,7 @@
             Text="{Binding LogText}"
             TextChanged="TextBox_TextChanged"
             TextWrapping="Wrap" />
-        <Grid Grid.Row="1" IsEnabled="{Binding IsConnected}">
+        <Grid Grid.Row="1" IsEnabled="{Binding Enabled}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
