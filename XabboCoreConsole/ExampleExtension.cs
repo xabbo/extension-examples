@@ -9,9 +9,8 @@ using Xabbo.Core.Extensions;
 namespace XabboCoreConsole;
 
 /// <summary>
-/// A basic G-Earth extension that uses Xabbo.Core
-/// to track room state and list each furni's name &amp; count
-/// when entering a room.
+/// A basic G-Earth extension that uses Xabbo.Core to track room state
+/// and list each furni's name and count when entering a room.
 /// </summary>
 [Title("Xabbo Core Example"), Author("b7")]
 public class ExampleExtension : GEarthExtension
